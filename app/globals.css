@@ -502,3 +502,45 @@ body,
   height: 0;
   pointer-events: none;
 }
+.editor-content {
+  position: relative;
+}
+
+.editor-container {
+  position: relative;
+}
+
+.editor-content {
+  min-height: 100vh;
+}
+
+.page-break {
+  border-bottom: 1px dashed #ccc;
+  margin: 20px 0;
+  padding: 10px 0;
+  position: relative;
+  height: 40px;
+}
+
+.page-number {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 0.8em;
+  color: #888;
+}
+
+.ProseMirror {
+  min-height: 100vh;
+}
+
+@page {
+  size: 210mm 297mm;
+  margin: 20mm;
+}
+
+@media print {
+  .page-break {
+    page-break-after: always;
+  }
+}

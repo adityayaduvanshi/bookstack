@@ -4,6 +4,7 @@ import {
   EditorContent,
   BubbleMenu,
   FloatingMenu,
+  Extension,
 } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
@@ -12,7 +13,7 @@ import Link from '@tiptap/extension-link';
 import Image from '@tiptap/extension-image';
 import { Color } from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Chapter, Course } from '@prisma/client';
 import { Button } from './ui/button';
 import {
@@ -36,7 +37,9 @@ import Typography from '@tiptap/extension-typography';
 import Placeholder from '@tiptap/extension-placeholder';
 import dynamic from 'next/dynamic';
 import BookSettingsDialog from './settings/book-settings';
-
+import { Pagination } from './tiptap/extentions/pagination';
+import { Plugin, PluginKey } from 'prosemirror-state';
+import Navbar from './dashboard/_components/navbar';
 const PdfPreview = dynamic(() => import('./pdf/pdf-preview'), { ssr: false });
 
 interface EditorProps {
@@ -44,7 +47,34 @@ interface EditorProps {
   chapterId: string;
   data: (Chapter & { course: Course }) | null;
 }
+const PasteHandler = Extension.create({
+  name: 'pasteHandler',
 
+  addProseMirrorPlugins() {
+    return [
+      new Plugin({
+        key: new PluginKey('pasteHandler'),
+        props: {
+          handlePaste: (view, event, slice) => {
+            const { state } = view;
+            const { tr } = state;
+            const { selection } = tr;
+            const { empty, from, to } = selection;
+
+            if (!empty) {
+              tr.deleteSelection();
+            }
+
+            tr.replaceRange(from, to, slice);
+            view.dispatch(tr);
+
+            return true;
+          },
+        },
+      }),
+    ];
+  },
+});
 const Editor = ({ chapterId, courseId, data }: EditorProps) => {
   const [title, setTitle] = useState<string>(data?.title ?? '');
   const [preview, setPreview] = useState<string>(data?.previewText ?? '');
@@ -73,13 +103,28 @@ const Editor = ({ chapterId, courseId, data }: EditorProps) => {
         placeholder: 'Start writing your book here...',
       }),
       Typography,
+      Pagination.configure({
+        pageSize: pdfPageSize,
+      }),
+      // PasteHandler,
     ],
+
     content: data?.htmlContent || '<p>Start writing your book here...</p>',
     onUpdate: ({ editor }) => {
       console.log(editor.getHTML());
     },
+    editorProps: {
+      handlePaste: (view, event, slice) => {
+        // This will allow the default paste behavior
+        return false;
+      },
+    },
   });
-
+  useEffect(() => {
+    if (editor) {
+      editor.commands.updatePageSize(pdfPageSize);
+    }
+  }, [pdfPageSize, editor]);
   const save = async (content: string) => {
     try {
       await axios.put(`/api/course/${courseId}/chapters/${chapterId}`, {
@@ -99,6 +144,7 @@ const Editor = ({ chapterId, courseId, data }: EditorProps) => {
   return (
     <div className="flex flex-col h-screen bg-white">
       {/* Top Bar */}
+
       <div className="flex items-center justify-center p-2 border-b">
         <div className="flex items-center space-x-2">
           <Button
@@ -121,12 +167,12 @@ const Editor = ({ chapterId, courseId, data }: EditorProps) => {
 
       {/* Main Content Area */}
       <div className="flex-1 overflow-auto p-8">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-3xl mx-auto editor-container">
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="text-3xl font-bold border-none focus:outline-none w-full mb-4"
-            placeholder="Founder Mode"
+            placeholder="Book Title"
           />
           <div className="flex items-center mb-4">
             <div className="w-10 h-10 rounded-full bg-gray-300 mr-3"></div>
@@ -209,7 +255,10 @@ const Editor = ({ chapterId, courseId, data }: EditorProps) => {
               </Button>
             </FloatingMenu>
           )}
-          <EditorContent editor={editor} className="prose max-w-none" />
+          <EditorContent
+            editor={editor}
+            className="prose max-w-none editor-content"
+          />
         </div>
       </div>
 
@@ -321,6 +370,7 @@ const Editor = ({ chapterId, courseId, data }: EditorProps) => {
                 pageSize={pdfPageSize}
               />
             </div>
+            {console.log('PDF Content:', editor?.getHTML())}
           </div>
         </div>
       )}

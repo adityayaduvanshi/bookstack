@@ -1,4 +1,3 @@
-'use client';
 import React, { useRef, useState, useEffect } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import html2pdf from 'html2pdf.js';
@@ -50,6 +49,70 @@ const PdfPreview: React.FC<PdfPreviewProps> = ({ content, pageSize }) => {
     }
   };
 
+  const styles = `
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+    
+    }
+    .ProseMirror {
+      > * + * {
+        margin-top: 0.75em;
+      }
+    }
+    .ProseMirror h1 {
+      font-size: 2.25rem !important;
+      font-weight: bold;
+    }
+    .ProseMirror h2 {
+      font-size: 1.875rem !important;
+      font-weight: bold;
+    }
+    .ProseMirror h3 {
+      font-size: 1.5rem !important;
+    }
+    .ProseMirror h4 {
+      font-size: 1.2rem !important;
+    }
+    .ProseMirror h5 {
+      font-size: 1.1rem !important;
+    }
+    .ProseMirror h6 {
+      font-size: 1rem !important;
+    }
+    .ProseMirror ul,
+    .ProseMirror ol {
+      padding-left: 1.5em;
+      margin-bottom: 0.75em;
+    }
+    .ProseMirror li {
+      margin-bottom: 0.5em;
+    }
+    .ProseMirror blockquote {
+      border-left: 3px solid #b8c2cc;
+      padding-left: 1em;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    .ProseMirror pre {
+      background-color: #f8f8f8;
+      border-radius: 3px;
+      padding: 0.75em 1em;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    .ProseMirror code {
+      background-color: #f0f0f0;
+      border-radius: 3px;
+      padding: 0.2em 0.4em;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    .ProseMirror hr {
+      border: none;
+      border-top: 2px solid #e2e8f0;
+      margin: 2em 0;
+    }
+  `;
+
   return (
     <div className="flex flex-col items-center">
       <div className="mb-4">
@@ -66,7 +129,7 @@ const PdfPreview: React.FC<PdfPreviewProps> = ({ content, pageSize }) => {
           Download PDF
         </button>
       </div>
-      <div className="w-full max-w-3xl border rounded-lg overflow-hidden">
+      <div className="w-full max-w-[210mm] border rounded-lg overflow-hidden">
         {pdfUrl ? (
           <iframe src={pdfUrl} className="w-full h-[800px]" />
         ) : (
@@ -75,12 +138,18 @@ const PdfPreview: React.FC<PdfPreviewProps> = ({ content, pageSize }) => {
       </div>
       <div
         ref={componentRef}
-        className=" p-4 mt-4 w-full max-w-3xl"
-        style={{ width: '210mm', minHeight: '297mm', backgroundColor: 'white' }}
+        className="p-4 mt-4 w-full max-w-[210mm]"
+        style={{
+          width: '210mm',
+          minHeight: '297mm',
+          backgroundColor: 'white',
+          padding: '20mm',
+        }}
       >
+        <style>{styles}</style>
         <div
           dangerouslySetInnerHTML={{ __html: content }}
-          className="prose max-w-none"
+          className="ProseMirror prose max-w-none"
         />
       </div>
     </div>

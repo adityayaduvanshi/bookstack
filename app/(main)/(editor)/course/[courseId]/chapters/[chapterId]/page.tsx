@@ -26,6 +26,7 @@ const Chapterpage = async ({ params }: ChapterPageProps) => {
         chapterId={params.chapterId}
         data={chapter}
       /> */}
+
       <Editor
         courseId={params.courseId}
         chapterId={params.chapterId}
