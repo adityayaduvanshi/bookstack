@@ -1,0 +1,123 @@
+{
+    "counters": {
+        "u_row": 2,
+        "u_column": 2,
+        "u_content_text": 2,
+        "u_content_heading": 2,
+        "u_content_button": 1
+    },
+    "body": {
+        "id": "0QFAKPxyzM",
+        "rows": [
+            {
+                "id": "-Pm2fEb9Wp",
+                "cells": [1],
+                "columns": [
+                    {
+                        "id": "newColumnId",
+                        "contents": [
+                            {
+                                "id": "textContentId",
+                                "type": "heading",
+                                "values": {
+                                    "containerPadding": "10px 0px",
+                                    "headingType": "h1",
+                                    "fontSize": "20px",
+                                    "textAlign": "left",
+                                    "lineHeight": "140%",
+                                    "text": "LOGO",
+                                    "color": "#FFFFFF"
+                                }
+                            },
+                            {
+                                "id": "wQof8hV6QL",
+                                "type": "heading",
+                                "values": {
+                                    "containerPadding": "10px 0px 0px 0px",
+                                    "headingType": "h1",
+                                    "fontSize": "90px",
+                                    "color": "#ffffff",
+                                    "textAlign": "left",
+                                    "lineHeight": "100%",
+                                    "text": "LEARN CODING"
+                                }
+                            },
+                            {
+                                "id": "tfkkYtjur9",
+                                "type": "text",
+                                "values": {
+                                    "containerPadding": "10px 0px",
+                                    "fontSize": "18px",
+                                    "color": "#ffffff",
+                                    "textAlign": "left",
+                                    "lineHeight": "160%",
+                                    "text": "The Complete Coding for Beginners Course"
+                                }
+                            },
+                            {
+                                "id": "vjfsdzgJRX",
+                                "type": "button",
+                                "values": {
+                                    "containerPadding": "20px 0px 0px 0px",
+                                    "href": {
+                                        "name": "web",
+                                        "values": {
+                                            "href": "http://joinnow.com",
+                                            "target": "_blank"
+                                        }
+                                    },
+                                    "buttonColors": {
+                                        "color": "#000000",
+                                        "backgroundColor": "#FFFFFF",
+                                        "hoverColor": "#000000",
+                                        "hoverBackgroundColor": "#FFFFFF"
+                                    },
+                                    "size": {
+                                        "autoWidth": false,
+                                        "width": "auto"
+                                    },
+                                    "fontSize": "20px",
+                                    "textAlign": "left",
+                                    "lineHeight": "120%",
+                                    "padding": "12px 24px",
+                                    "text": "Subscribe"
+                                }
+                            }
+                        ],
+                        "values": {
+                            "padding": "50px",
+                            "backgroundColor": "#000000",
+                            "textAlign": "left"
+                        }
+                    }
+                ],
+                "values": {
+                    "padding": "0px",
+                    "backgroundColor": "#000000"
+                }
+            }
+        ],
+        "values": {
+            "popupPosition": "center",
+            "popupWidth": "800px",
+            "popupHeight": "auto",
+            "borderRadius": "10px",
+            "contentAlign": "center",
+            "contentVerticalAlign": "center",
+            "contentWidth": 800,
+            "fontFamily": {
+                "label": "Arial",
+                "value": "arial,sans-serif"
+            },
+            "textColor": "#ffffff",
+            "popupBackgroundColor": "#FFFFFF",
+            "popupOverlay_backgroundColor": "rgba(0, 0, 0, 0.1)",
+            "popupCloseButton_position": "top-right",
+            "popupCloseButton_backgroundColor": "#DDDDDD",
+            "popupCloseButton_iconColor": "#000000",
+            "backgroundColor": "#000000",
+            "textAlign": "left"
+        }
+    },
+    "schemaVersion": 12
+}

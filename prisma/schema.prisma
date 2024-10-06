@@ -1,0 +1,201 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String       @id @default(cuid())
+  name          String?
+  email         String       @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  courses       Course[]
+  website       Website[]
+  templates     Template[]
+  subscribers   Subscriber[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  lemonApiKey   String?
+  senderEmail   String?
+  senderName    String?
+  replyTo       String?
+  creatorName   String?
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  id    String @id @default(cuid())
+  email String
+  token String @unique
+
+  expires DateTime
+
+  @@unique([email, token])
+}
+
+enum CourseAction {
+  CREATE
+  UPDATE
+  DELETE
+  RESTORE
+  PUBLISH
+  UNPUBLISH
+}
+
+model CourseHistory {
+  id          String       @id @default(cuid())
+  courseId    String
+  chapterId   String?
+  action      CourseAction
+  details     Json? // Store additional details about the change
+  performedBy String // User ID who performed the action
+  createdAt   DateTime     @default(now())
+
+  course  Course   @relation(fields: [courseId], references: [id])
+  chapter Chapter? @relation(fields: [chapterId], references: [id])
+}
+
+model Course {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  userId      String
+  user        User         @relation(fields: [userId], references: [id])
+  chapters    Chapter[]
+  website     Website?
+  header      String?      @db.Text
+  headerJson  Json?
+  footerJson  Json?
+  footer      String?      @db.Text
+  published   Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  price       Float?
+  trash       Boolean      @default(false)
+  deletedAt   DateTime?
+  sender      String?
+  subscriber  Subscriber[]
+  creator     String?
+  facebook    String?
+  twitter     String?
+
+  instagram String?
+  linkedin  String?
+  youtube   String?
+  pinterest String?
+
+  // For future use or additional platforms
+  personalWebsite String?
+  discord         String?
+  stack           String?
+  github          String?
+  medium          String?
+  history         CourseHistory[]
+  isCourseFree    Boolean?
+  productID       String?
+}
+
+model Chapter {
+  id          String          @id @default(cuid())
+  title       String
+  content     String          @db.Text
+  courseId    String
+  htmlContent String?         @db.Text
+  jsonContent Json?
+  previewText String?
+  order       Int             @default(autoincrement())
+  course      Course          @relation(fields: [courseId], references: [id])
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  isDeleted   Boolean         @default(false)
+  deletedAt   DateTime?
+  history     CourseHistory[]
+}
+
+model Website {
+  id               String        @id @default(cuid())
+  courseId         String        @unique
+  userId           String
+  domain           String        @unique
+  htmlContent      String        @db.Text
+  jsonContent      Json?
+  siteTitle        String?
+  cssContent       String?       @db.Text
+  draftHtmlContent String?       @db.Text // Draft HTML content
+  draftJsonContent Json? // Draft JSON content
+  draftCssContent  String?       @db.Text // Draft CSS content
+  status           WebsiteStatus @default(DRAFT)
+  visits           Int           @default(0)
+  course           Course        @relation(fields: [courseId], references: [id])
+  user             User          @relation(fields: [userId], references: [id])
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+}
+
+enum WebsiteStatus {
+  DRAFT
+  PUBLISHED
+  PUBLISH_CHANGES
+}
+
+model Template {
+  id          String   @id @default(cuid())
+  title       String
+  htmlContent String   @db.Text
+  jsonContent Json?
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Subscriber {
+  id           String   @id @default(cuid())
+  email        String
+  name         String
+  courseId     String
+  course       Course   @relation(fields: [courseId], references: [id])
+  deliveryTime String // ISO 8601 format for time, e.g., "18:30"
+  timezone     String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  User         User?    @relation(fields: [userId], references: [id])
+  userId       String?
+}
