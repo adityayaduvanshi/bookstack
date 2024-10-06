@@ -158,12 +158,12 @@ const Editor = ({ chapterId, courseId, data }: EditorProps) => {
             inlineToolbar: true,
             class: Embed,
           },
-          
+
           aiText: {
             class: AIText,
             config: {
-              // openaiKey:'sk-proj-NKRMGFWWzrl33KTI8hpBT3BlbkFJvgU5KA329ywha5gN15AK'
-              openaiKey:'sk-proj-sMn554QCtfwZ1dxVb3m8T3BlbkFJnH35e2J2Jip3ziksN6y5',
+              //
+              openaiKey: 'random',
               callback: async (prompt: string) => {
                 console.log('AI prompt:', prompt);
                 try {
@@ -176,11 +176,11 @@ const Editor = ({ chapterId, courseId, data }: EditorProps) => {
                     },
                     body: JSON.stringify({ prompt }),
                   });
-                  
+
                   if (!response.ok) {
                     throw new Error('AI text generation failed');
                   }
-                  
+
                   const data = await response.json();
                   console.log('AI generated text:', data.text);
                   return data.text;
@@ -188,12 +188,9 @@ const Editor = ({ chapterId, courseId, data }: EditorProps) => {
                   console.error('Error generating AI text:', error);
                   throw error; // Rethrow the error to be handled by the plugin
                 }
-              }
-            }
+              },
+            },
           },
-
-
-          
 
           anyButton: AnyButton,
 
